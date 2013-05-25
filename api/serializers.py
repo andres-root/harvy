@@ -14,6 +14,7 @@ class SnippetSerializer(serializers.Serializer):
                                        default='python')
     style = serializers.ChoiceField(choices=STYLE_CHOICES,
                                     default='friendly')
+    owner = serializers.Field(source='owner.username')
 
     def restore_object(self, attrs, instance=None):
         """

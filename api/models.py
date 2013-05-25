@@ -25,7 +25,7 @@ class Snippet(models.Model):
 
 
     class Meta:
-        ordering = ('created',)
+        ordering = ('created','owner',)
 
     def save(self, *args, **kwargs):
         """

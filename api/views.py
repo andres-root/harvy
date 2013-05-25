@@ -1,11 +1,12 @@
 from rest_framework import status
+from rest_framework import permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from api.models import Snippet
 from api.serializers import SnippetSerializer
 
 @api_view(['GET', 'POST'])
-def snippet_list(request):
+def snippet_list(request,permission_classes = (permissions.IsAuthenticatedOrReadOnly,)):
     """
     List all snippets, or create a new snippet.
     """
@@ -22,6 +23,8 @@ def snippet_list(request):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def pre_save(self, obj):
+        obj.owner = self.request.user
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def snippet_detail(request, pk):
@@ -48,6 +51,9 @@ def snippet_detail(request, pk):
     elif request.method == 'DELETE':
         snippet.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def pre_save(self, obj):
+        obj.owner = self.request.user
 
 class UserList(generics.ListAPIView):
     queryset = User.objects.all()
