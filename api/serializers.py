@@ -1,6 +1,7 @@
 from django.forms import widgets
 from rest_framework import serializers
 from api.models import Snippet, LANGUAGE_CHOICES, STYLE_CHOICES
+from django.contrib.auth.models import User
 
 class SnippetSerializer(serializers.Serializer):
     pk = serializers.Field()  # Note: `Field` is an untyped read-only field.
@@ -33,3 +34,11 @@ class SnippetSerializer(serializers.Serializer):
 
         # Create new instance
         return Snippet(**attrs)
+
+
+class UserSerializer(serializers.ModelSerializer):
+    snippets = serializers.PrimaryKeyRelatedField(many=True)
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'snippets')
